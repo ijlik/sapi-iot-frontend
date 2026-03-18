@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartLight Dashboard</title>
+
+<style>
+:root{
+  --bg:#0b0f1a;
+  --card:#121a2b;
+  --neon:#00e5ff;
+  --neon2:#8a2be2;
+  --text:#e6f1ff;
+  --soft:#94a3b8;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body{
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  color:var(--text);
+  padding:20px;
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 25px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.03);
+  box-shadow:0 0 20px rgba(0,229,255,0.2);
+}
+
+.logo{
+  font-size:22px;
+  color:var(--neon);
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:20px;
+  margin-top:20px;
+}
+
+/* CARD */
+.card{
+  background:var(--card);
+  border-radius:16px;
+  padding:15px;
+  box-shadow:0 0 15px rgba(0,229,255,0.1);
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 0 25px rgba(0,229,255,0.3);
+}
+
+/* LAMP GRID */
+.lamps{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-top:10px;
+}
+
+.lamp-card{
+  position:relative;
+  padding:15px;
+  border-radius:14px;
+  background:linear-gradient(145deg,#0f172a,#020617);
+  border:1px solid rgba(255,255,255,0.05);
+  transition:0.3s;
+}
+
+.lamp-card.active{
+  box-shadow:0 0 15px var(--neon);
+}
+
+.lamp-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+
+/* SWITCH */
+.switch{
+  width:40px;
+  height:20px;
+  background:#333;
+  border-radius:20px;
+  cursor:pointer;
+  position:relative;
+  transition:0.3s;
+}
+
+.switch::after{
+  content:"";
+  position:absolute;
+  width:16px;
+  height:16px;
+  background:white;
+  border-radius:50%;
+  top:2px;
+  left:2px;
+  transition:0.3s;
+}
+
+.switch.active{
+  background:var(--neon);
+}
+
+.switch.active::after{
+  left:22px;
+}
+
+/* SLIDER */
+.slider{
+  width:100%;
+  margin-top:10px;
+}
+
+/* VOICE */
+.voice{
+  text-align:center;
+}
+
+.mic{
+  width:80px;
+  height:80px;
+  margin:auto;
+  border-radius:50%;
+  background:radial-gradient(circle, var(--neon), transparent);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  0%{box-shadow:0 0 10px var(--neon);}
+  50%{box-shadow:0 0 30px var(--neon);}
+  100%{box-shadow:0 0 10px var(--neon);}
+}
+
+/* BUTTONS */
+.buttons{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.btn{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  color:white;
+  background:linear-gradient(90deg,var(--neon),var(--neon2));
+  transition:0.3s;
+}
+
+.btn:hover{
+  transform:scale(1.05);
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="logo">🏠 SmartLight</div>
+  <div>🔔 👤</div>
+</div>
+
+<div class="grid">
+
+  <!-- LEFT -->
+  <div>
+
+    <div class="card">
+      <h3>💡 3 Lampu Menyala</h3>
+    </div>
+
+    <div class="card">
+      <h3>Kontrol Lampu</h3>
+
+      <div class="lamps">
+
+        <!-- Lamp 1 -->
+        <div class="lamp-card active">
+          <div class="lamp-header">
+            <span>Lampu Utama</span>
+            <div class="switch active"></div>
+          </div>
+          <input type="range" class="slider" value="75">
+        </div>
+
+        <!-- Lamp 2 -->
+        <div class="lamp-card">
+          <div class="lamp-header">
+            <span>Lampu Lantai</span>
+            <div class="switch"></div>
+          </div>
+          <input type="range" class="slider" value="30">
+        </div>
+
+        <!-- Lamp 3 -->
+        <div class="lamp-card active">
+          <div class="lamp-header">
+            <span>Lampu Meja</span>
+            <div class="switch active"></div>
+          </div>
+          <input type="range" class="slider" value="40">
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Skenario</h3>
+      <div class="buttons">
+        <button class="btn">Membaca</button>
+        <button class="btn">Santai</button>
+        <button class="btn">Film</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT -->
+  <div>
+
+    <div class="card">
+      <h3>Konsumsi Energi</h3>
+      <p style="font-size:30px;color:var(--neon)">120W</p>
+    </div>
+
+    <div class="card voice">
+      <h3>Voice Mode</h3>
+      <div class="mic">🎤</div>
+      <p>Katakan: "Nyalakan lampu"</p>
+    </div>
+
+    <div class="card">
+      <h3>Jadwal</h3>
+      <p>18:00 - 23:00</p>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+// TOGGLE LAMP
+document.querySelectorAll('.switch').forEach(sw=>{
+  sw.addEventListener('click', ()=>{
+    sw.classList.toggle('active');
+
+    const card = sw.closest('.lamp-card');
+    card.classList.toggle('active');
+  });
+});
+
+// SLIDER EFFECT (brightness glow)
+document.querySelectorAll('.slider').forEach(slider=>{
+  slider.addEventListener('input', ()=>{
+    const value = slider.value;
+    const card = slider.closest('.lamp-card');
+
+    card.style.boxShadow = `0 0 ${value/2}px rgba(0,229,255,0.7)`;
+  });
+});
+
+// BUTTON SCENARIO
+document.querySelectorAll('.btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    alert("Mode: " + btn.innerText);
+  });
+});
+</script>
+
+</body>
+</html>

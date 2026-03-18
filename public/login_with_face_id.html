@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SAPI_OS_V2.4 | NEURAL_ID_LOGIN</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-container-low":"#151b2d","background":"#0c1324","outline":"#849396",
+            "on-error-container":"#ffdad6","error-container":"#93000a",
+            "on-tertiary-fixed-variant":"#43474c","surface-bright":"#33394c",
+            "surface-container-high":"#23293c","on-error":"#690005",
+            "inverse-surface":"#dce1fb","inverse-on-surface":"#2a3043",
+            "secondary-fixed-dim":"#d0bcff","surface-container-lowest":"#070d1f",
+            "error":"#ffb4ab","tertiary-container":"#cdd1d7",
+            "tertiary-fixed-dim":"#c3c7cd","on-primary-fixed":"#001f24",
+            "primary":"#c3f5ff","on-primary-container":"#00626e",
+            "outline-variant":"#3b494c","on-surface-variant":"#bac9cc",
+            "tertiary":"#e9edf3","surface":"#0c1324","on-secondary":"#3c0091",
+            "on-primary-fixed-variant":"#004f58","on-secondary-fixed":"#23005c",
+            "on-background":"#dce1fb","on-secondary-container":"#c4abff",
+            "surface-dim":"#0c1324","primary-fixed":"#9cf0ff",
+            "secondary-container":"#571bc1","secondary-fixed":"#e9ddff",
+            "on-primary":"#00363d","tertiary-fixed":"#dfe3e9",
+            "primary-fixed-dim":"#00daf3","surface-variant":"#2e3447",
+            "on-surface":"#dce1fb","primary-container":"#00e5ff",
+            "secondary":"#d0bcff","on-tertiary-fixed":"#171c20",
+            "inverse-primary":"#006875","surface-tint":"#00daf3",
+            "on-tertiary":"#2c3136","surface-container":"#191f31",
+            "on-secondary-fixed-variant":"#5516be",
+            "surface-container-highest":"#2e3447","on-tertiary-container":"#555a5f"
+          },
+          fontFamily: { "headline":["Space Grotesk"], "body":["Inter"], "label":["Space Grotesk"] },
+          borderRadius: { "DEFAULT":"0px", "lg":"0px", "xl":"0px", "full":"9999px" },
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .flicker-in-place { animation: flicker 2s infinite ease-in-out; }
+    @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+    .grid-bg {
+      background-image:
+        linear-gradient(to right, rgba(0, 229, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 229, 255, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .scanner-line {
+      background: linear-gradient(180deg, transparent, #00E5FF, transparent);
+      height: 2px; width: 100%; position: absolute; top: 0;
+      animation: scan 3s linear infinite;
+    }
+    @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen overflow-hidden">
+
+<!-- Grid Background -->
+<div class="fixed inset-0 grid-bg pointer-events-none"></div>
+
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0c1324]/60 backdrop-blur-xl border-b border-[#00E5FF]/20 shadow-[0_0_25px_rgba(0,218,243,0.15)]">
+  <div class="flex items-center gap-4">
+    <span class="material-symbols-outlined text-[#00E5FF]">terminal</span>
+    <span class="text-xl font-bold tracking-tighter text-[#00E5FF] drop-shadow-[0_0_8px_rgba(0,229,255,0.4)] font-headline">SAPI_OS_V2.4</span>
+  </div>
+  <div class="flex items-center gap-6">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+      <span class="font-label uppercase text-[10px] tracking-widest text-primary">System: Online</span>
+    </div>
+    <div class="h-8 w-8 bg-surface-variant border border-primary/20 flex items-center justify-center">
+      <span class="material-symbols-outlined text-sm text-primary">person</span>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content Canvas -->
+<main class="relative flex flex-col items-center justify-center min-h-screen pt-16">
+
+  <!-- Left Technical Gutter -->
+  <aside class="fixed left-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-12 font-label text-[10px] tracking-widest text-primary-fixed-dim/40 uppercase">
+    <div class="space-y-2">
+      <p class="text-primary-fixed-dim">SYSTEM_LOAD</p>
+      <div class="w-32 h-1 bg-surface-container-high relative">
+        <div class="absolute inset-0 bg-primary-container w-2/3 shadow-[0_0_10px_#00E5FF]"></div>
+      </div>
+      <p>67.4%_OPTIMIZED</p>
+    </div>
+    <div class="space-y-1">
+      <p>NODE_ID: 0x9F22</p>
+      <p>LATENCY: 14MS</p>
+      <p>SEC_LEVEL: ALPHA</p>
+    </div>
+  </aside>
+
+  <!-- Right Technical Gutter -->
+  <aside class="fixed right-8 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-end gap-12 font-label text-[10px] tracking-widest text-primary-fixed-dim/40 uppercase text-right">
+    <div class="space-y-1">
+      <p>GEO_LOC: 37.7749 N</p>
+      <p>IP: 192.168.1.104</p>
+      <p>OS_KERNEL: STABLE</p>
+    </div>
+    <div class="space-y-2">
+      <p class="text-primary-fixed-dim">DATA_STREAM</p>
+      <div class="flex gap-1 h-8 items-end">
+        <div class="w-1 h-4 bg-primary/20"></div>
+        <div class="w-1 h-6 bg-primary/40"></div>
+        <div class="w-1 h-3 bg-primary/60"></div>
+        <div class="w-1 h-8 bg-primary shadow-[0_0_8px_#00E5FF]"></div>
+        <div class="w-1 h-5 bg-primary/30"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Central Biometric Module -->
+  <div class="relative z-10 flex flex-col items-center">
+    <!-- Biometric Scanning Ring Container -->
+    <div class="relative w-80 h-80 md:w-96 md:h-96 flex items-center justify-center">
+      <!-- Outer Static Ring -->
+      <div class="absolute inset-0 border border-primary/10 rounded-full scale-110"></div>
+      <!-- Pulsing Data Ring -->
+      <div class="absolute inset-0 border-2 border-primary/20 rounded-full animate-pulse"></div>
+      <!-- Rotating Fragmented Ring -->
+      <div class="absolute inset-4 border-2 border-dashed border-primary/40 rounded-full"></div>
+      <!-- Inner Scanning Canvas -->
+      <div class="relative w-full h-full rounded-full overflow-hidden bg-surface-container-lowest/40 backdrop-blur-md border border-primary/30 shadow-[0_0_50px_rgba(0,229,255,0.1)]">
+        <!-- Scanner Beam -->
+        <div class="scanner-line"></div>
+        <!-- Live Video Feed -->
+        <video id="video" autoplay playsinline muted class="w-full h-full object-cover grayscale brightness-75 contrast-125 opacity-70 mix-blend-screen"></video>
+        <!-- Corner Brackets -->
+        <div class="absolute top-8 left-8 w-6 h-6 border-t-2 border-l-2 border-primary shadow-[0_0_10px_#00E5FF]"></div>
+        <div class="absolute top-8 right-8 w-6 h-6 border-t-2 border-r-2 border-primary shadow-[0_0_10px_#00E5FF]"></div>
+        <div class="absolute bottom-8 left-8 w-6 h-6 border-b-2 border-l-2 border-primary shadow-[0_0_10px_#00E5FF]"></div>
+        <div class="absolute bottom-8 right-8 w-6 h-6 border-b-2 border-r-2 border-primary shadow-[0_0_10px_#00E5FF]"></div>
+      </div>
+      <!-- Floating Data Callouts -->
+      <div class="absolute -right-24 top-1/4 hidden md:flex items-center gap-4">
+        <div class="h-px w-16 bg-primary/40"></div>
+        <div class="font-label text-[10px] tracking-widest text-primary/80">
+          <p>EYE_COORD: 0.88</p>
+          <p>IRIS_VERIFY: OK</p>
+        </div>
+      </div>
+      <div class="absolute -left-24 bottom-1/4 hidden md:flex flex-row-reverse items-center gap-4 text-right">
+        <div class="h-px w-16 bg-primary/40"></div>
+        <div class="font-label text-[10px] tracking-widest text-primary/80">
+          <p>DEPTH_MAP: SYNC</p>
+          <p>NEURAL_LATCH: ACTIVE</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Indicator -->
+    <div class="mt-12 text-center">
+      <h2 id="status" class="font-headline text-2xl font-bold tracking-[0.2em] text-primary drop-shadow-[0_0_12px_rgba(0,229,255,0.6)] flicker-in-place">
+        INITIALIZING...
+      </h2>
+      <p class="mt-2 font-label text-sm tracking-widest text-on-surface-variant/60 uppercase">
+        DO NOT MOVE YOUR POSITION | SECURE CHANNEL: ESTABLISHED
+      </p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mt-10 flex flex-wrap justify-center gap-4">
+      <button id="btnScan" class="px-8 py-3 bg-primary text-on-primary font-headline text-sm tracking-widest uppercase shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:brightness-110 active:scale-95 transition-all">
+        SCAN_FACE
+      </button>
+      <button id="btnEnroll" class="px-8 py-3 border border-primary/40 text-primary font-headline text-sm tracking-widest uppercase hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(0,229,255,0.2)] transition-all">
+        ENROLL_FACE
+      </button>
+      <button id="btnReset" class="px-8 py-3 border border-error/40 text-error font-headline text-sm tracking-widest uppercase hover:bg-error/10 transition-all">
+        RESET_PROFILE
+      </button>
+      <a href="/dashboard" class="px-8 py-3 border border-primary/40 text-primary font-headline text-sm tracking-widest uppercase hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(0,229,255,0.2)] transition-all">
+        USE_PASSPHRASE
+      </a>
+    </div>
+    <p class="mt-4 font-label text-[10px] tracking-widest text-on-surface-variant/40 uppercase">Pertama kali? Klik ENROLL_FACE lalu SCAN_FACE untuk login.</p>
+  </div>
+</main>
+
+<!-- Bottom Left Decorative Branding -->
+<div class="fixed bottom-8 left-8 font-headline text-[10px] tracking-[0.5em] text-on-surface-variant/30 uppercase">
+  AUTHENTICATION_PHASE_01 // SECURE_ACCESS_LAYER
+</div>
+
+<script>
+  const video = document.getElementById('video');
+  const statusEl = document.getElementById('status');
+  const KEY = 'sapi_face_descriptor_v1';
+
+  const setStatus = (t) => statusEl.textContent = t;
+  const toF32 = (arr) => new Float32Array(arr);
+  const distance = (a,b)=>Math.sqrt(a.reduce((s,v,i)=>s+Math.pow(v-b[i],2),0));
+
+  async function loadModelsWithFallback() {
+    const bases = [
+      'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights',
+      'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'
+    ];
+    let lastErr = null;
+    for (const base of bases) {
+      try {
+        setStatus('LOADING_NEURAL_MODEL...');
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri(base),
+          faceapi.nets.faceLandmark68Net.loadFromUri(base),
+          faceapi.nets.faceRecognitionNet.loadFromUri(base)
+        ]);
+        return;
+      } catch (e) { lastErr = e; }
+    }
+    throw lastErr || new Error('Gagal load model wajah');
+  }
+
+  async function setup() {
+    await loadModelsWithFallback();
+    const stream = await navigator.mediaDevices.getUserMedia({video:true, audio:false});
+    video.srcObject = stream;
+    setStatus('CAMERA_ACTIVE // READY');
+  }
+
+  async function captureDescriptor() {
+    const det = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
+    if (!det) throw new Error('Wajah tidak terdeteksi');
+    return Array.from(det.descriptor);
+  }
+
+  document.getElementById('btnEnroll').onclick = async () => {
+    try {
+      setStatus('CAPTURING_BIOMETRIC_DATA...');
+      const descriptor = await captureDescriptor();
+      localStorage.setItem(KEY, JSON.stringify(descriptor));
+      setStatus('ENROLL_SUCCESS // SCAN TO LOGIN');
+    } catch (e) { setStatus('ENROLL_FAILED: ' + e.message); }
+  };
+
+  document.getElementById('btnScan').onclick = async () => {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) throw new Error('No face profile. Enroll first.');
+      setStatus('VERIFYING_NEURAL_ID...');
+      const current = await captureDescriptor();
+      const saved = JSON.parse(raw);
+      const d = distance(current, saved);
+      if (d < 0.55) {
+        sessionStorage.setItem('sapi_auth', 'ok');
+        setStatus('ACCESS_GRANTED // REDIRECTING...');
+        setTimeout(()=>location.href='/dashboard', 600);
+      } else {
+        setStatus('ACCESS_DENIED // D=' + d.toFixed(3));
+      }
+    } catch (e) { setStatus('SCAN_FAILED: ' + e.message); }
+  };
+
+  document.getElementById('btnReset').onclick = () => {
+    localStorage.removeItem(KEY);
+    sessionStorage.removeItem('sapi_auth');
+    setStatus('PROFILE_CLEARED');
+  };
+
+  async function boot() {
+    for (let i = 0; i < 50; i++) {
+      if (window.faceapi) break;
+      await new Promise(r => setTimeout(r, 100));
+    }
+    if (!window.faceapi) {
+      throw new Error('faceapi library gagal dimuat. Coba refresh.');
+    }
+    await setup();
+  }
+
+  window.addEventListener('load', () => {
+    boot().catch(e => setStatus('INIT_FAILED: ' + e.message));
+  });
+</script>
+</body>
+</html>

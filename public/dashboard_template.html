@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8" />
+<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+<title>SAPI_OS_V2.4 | IoT Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "surface-container-low":"#151b2d","background":"#0c1324","outline":"#849396",
+          "on-error-container":"#ffdad6","error-container":"#93000a",
+          "on-tertiary-fixed-variant":"#43474c","surface-bright":"#33394c",
+          "surface-container-high":"#23293c","on-error":"#690005",
+          "inverse-surface":"#dce1fb","inverse-on-surface":"#2a3043",
+          "secondary-fixed-dim":"#d0bcff","surface-container-lowest":"#070d1f",
+          "error":"#ffb4ab","tertiary-container":"#cdd1d7",
+          "tertiary-fixed-dim":"#c3c7cd","on-primary-fixed":"#001f24",
+          "primary":"#c3f5ff","on-primary-container":"#00626e",
+          "outline-variant":"#3b494c","on-surface-variant":"#bac9cc",
+          "tertiary":"#e9edf3","surface":"#0c1324","on-secondary":"#3c0091",
+          "on-primary-fixed-variant":"#004f58","on-secondary-fixed":"#23005c",
+          "on-background":"#dce1fb","on-secondary-container":"#c4abff",
+          "surface-dim":"#0c1324","primary-fixed":"#9cf0ff",
+          "secondary-container":"#571bc1","secondary-fixed":"#e9ddff",
+          "on-primary":"#00363d","tertiary-fixed":"#dfe3e9",
+          "primary-fixed-dim":"#00daf3","surface-variant":"#2e3447",
+          "on-surface":"#dce1fb","primary-container":"#00e5ff",
+          "secondary":"#d0bcff","on-tertiary":"#2c3136",
+          "surface-container":"#191f31","on-secondary-fixed-variant":"#5516be",
+          "surface-container-highest":"#2e3447","on-tertiary-container":"#555a5f"
+        },
+        fontFamily: { "headline":["Space Grotesk"], "body":["Inter"], "label":["Space Grotesk"] },
+        borderRadius: { "DEFAULT":"0px", "lg":"0px", "xl":"0px", "full":"9999px" },
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body {
+    background-color: #0c1324;
+    background-image:
+      linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .glass-panel {
+    background: rgba(46, 52, 71, 0.6);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0, 229, 255, 0.2);
+  }
+  .data-ring { transform: rotate(-90deg); }
+</style>
+</head>
+<body class="font-body text-on-background selection:bg-primary-container selection:text-on-primary-container overflow-hidden h-screen flex flex-col">
+<script>if(sessionStorage.getItem('sapi_auth')!=='ok') location.href='/login';</script>
+
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0c1324]/60 backdrop-blur-xl border-b border-[#00E5FF]/20 shadow-[0_0_25px_rgba(0,218,243,0.15)]">
+  <div class="flex items-center gap-4">
+    <span class="material-symbols-outlined text-[#00E5FF]">terminal</span>
+    <span class="text-xl font-bold tracking-tighter text-[#00E5FF] drop-shadow-[0_0_8px_rgba(0,229,255,0.4)] font-headline">SAPI_OS_V2.4</span>
+  </div>
+  <div class="flex items-center gap-6">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+      <span class="font-label uppercase text-[10px] tracking-widest text-primary">System: Online</span>
+    </div>
+    <a href="/login" onclick="sessionStorage.removeItem('sapi_auth')" class="h-8 w-8 bg-surface-variant border border-primary/20 flex items-center justify-center hover:bg-primary/10 transition-colors" title="Logout">
+      <span class="material-symbols-outlined text-sm text-primary">logout</span>
+    </a>
+  </div>
+</header>
+
+<div class="flex flex-1 pt-16 h-full">
+  <!-- NavigationDrawer -->
+  <nav class="fixed left-0 top-16 bottom-0 z-40 flex flex-col items-center py-8 bg-[#0c1324] border-r border-[#00E5FF]/10 w-24">
+    <div class="space-y-8 w-full flex flex-col items-center">
+      <a href="/dashboard" class="bg-[#00E5FF]/15 text-[#00E5FF] border-l-2 border-[#00E5FF] py-4 w-full flex flex-col items-center gap-1 scale-95 active:scale-90 transition-transform">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+        <span class="font-['Space_Grotesk'] font-medium text-[10px] tracking-widest">DASHBOARD</span>
+      </a>
+      <a href="/command" class="text-[#dce1fb]/40 py-4 w-full flex flex-col items-center gap-1 hover:bg-[#00E5FF]/5 hover:text-[#00E5FF] scale-95 active:scale-90 transition-transform">
+        <span class="material-symbols-outlined">lightbulb_circle</span>
+        <span class="font-['Space_Grotesk'] font-medium text-[10px] tracking-widest">DEVICE_ARRAY</span>
+      </a>
+      <a href="/voice" class="text-[#dce1fb]/40 py-4 w-full flex flex-col items-center gap-1 hover:bg-[#00E5FF]/5 hover:text-[#00E5FF] scale-95 active:scale-90 transition-transform">
+        <span class="material-symbols-outlined">mic_none</span>
+        <span class="font-['Space_Grotesk'] font-medium text-[10px] tracking-widest">VOICE_MODE</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content Canvas -->
+  <main class="ml-24 flex-1 p-8 overflow-y-auto bg-background relative">
+    <!-- Hero Telemetry Section -->
+    <div class="grid grid-cols-12 gap-8 mb-8">
+      <!-- Large Chart Visualization -->
+      <div class="col-span-12 lg:col-span-8 glass-panel p-6 shadow-[0_0_25px_rgba(0,218,243,0.1)]">
+        <div class="flex justify-between items-start mb-8">
+          <div>
+            <h2 class="font-headline text-2xl font-bold text-primary tracking-tight">ENERGY_CONSUMPTION_MATRIX</h2>
+            <p class="font-label text-xs text-outline tracking-widest uppercase">Real-time aggregate power draw / kW/h</p>
+          </div>
+          <div class="text-right">
+            <span class="font-label text-3xl font-light text-primary tracking-tighter">842.04 <span class="text-xs text-outline">kW/h</span></span>
+            <div class="flex items-center justify-end text-error text-[10px] font-bold">
+              <span class="material-symbols-outlined text-sm">trending_up</span>
+              +12.4% vs L-HOUR
+            </div>
+          </div>
+        </div>
+        <!-- Vector Chart -->
+        <div class="h-64 relative border-l border-b border-outline-variant/30 overflow-hidden">
+          <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 800 200">
+            <defs>
+              <linearGradient id="chartGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+                <stop offset="0%" style="stop-color:rgba(0,229,255,0.2);stop-opacity:1"></stop>
+                <stop offset="100%" style="stop-color:rgba(0,229,255,0);stop-opacity:0"></stop>
+              </linearGradient>
+            </defs>
+            <path d="M0,150 Q50,140 100,160 T200,120 T300,100 T400,130 T500,80 T600,90 T700,40 T800,60 L800,200 L0,200 Z" fill="url(#chartGradient)"></path>
+            <path d="M0,150 Q50,140 100,160 T200,120 T300,100 T400,130 T500,80 T600,90 T700,40 T800,60" fill="none" stroke="#00E5FF" stroke-width="2"></path>
+            <path d="M0,180 Q50,170 100,185 T200,160 T300,140 T400,150 T500,120 T600,130 T700,90 T800,110" fill="none" opacity="0.5" stroke="#d0bcff" stroke-dasharray="4,4" stroke-width="1"></path>
+          </svg>
+          <div class="absolute inset-0 pointer-events-none grid grid-cols-8 gap-px opacity-10">
+            <div class="border-r border-outline"></div><div class="border-r border-outline"></div><div class="border-r border-outline"></div><div class="border-r border-outline"></div><div class="border-r border-outline"></div><div class="border-r border-outline"></div><div class="border-r border-outline"></div>
+          </div>
+        </div>
+        <div class="flex justify-between mt-4 font-label text-[10px] text-outline tracking-widest">
+          <span>T-MINUS 60M</span><span>T-MINUS 30M</span><span>T-MINUS 15M</span><span class="text-primary-container">LIVE_FEED</span>
+        </div>
+      </div>
+
+      <!-- Efficiency Gauges -->
+      <div class="col-span-12 lg:col-span-4 flex flex-col gap-8">
+        <div class="glass-panel p-6 flex items-center justify-between shadow-[0_0_25px_rgba(208,188,255,0.1)]">
+          <div class="relative w-24 h-24">
+            <svg class="w-full h-full data-ring" viewBox="0 0 100 100">
+              <circle class="text-surface-container-highest" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+              <circle id="gauge-online" class="text-primary" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="butt" stroke-width="8"></circle>
+            </svg>
+            <div id="gauge-online-pct" class="absolute inset-0 flex items-center justify-center font-headline font-bold text-lg">0%</div>
+          </div>
+          <div class="flex-1 ml-6">
+            <h3 class="font-headline font-bold text-sm tracking-widest text-secondary">ONLINE_RATIO</h3>
+            <p class="font-label text-[10px] text-outline mb-2">DEVICES_CONNECTED</p>
+            <div class="h-1 bg-surface-container-highest w-full relative">
+              <div id="bar-online" class="absolute top-0 left-0 h-full bg-secondary w-0 transition-all"></div>
+            </div>
+          </div>
+        </div>
+        <div class="glass-panel p-6 flex items-center justify-between shadow-[0_0_25px_rgba(0,218,243,0.1)]">
+          <div class="relative w-24 h-24">
+            <svg class="w-full h-full data-ring" viewBox="0 0 100 100">
+              <circle class="text-surface-container-highest" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+              <circle id="gauge-active" class="text-primary-fixed-dim" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="butt" stroke-width="8"></circle>
+            </svg>
+            <div id="gauge-active-pct" class="absolute inset-0 flex items-center justify-center font-headline font-bold text-lg">0%</div>
+          </div>
+          <div class="flex-1 ml-6">
+            <h3 class="font-headline font-bold text-sm tracking-widest text-primary">LAMP_ACTIVE</h3>
+            <p class="font-label text-[10px] text-outline mb-2">DEVICES_ON_STATE</p>
+            <div class="h-1 bg-surface-container-highest w-full relative">
+              <div id="bar-active" class="absolute top-0 left-0 h-full bg-primary-fixed-dim w-0 transition-all"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Device Unit Cards -->
+    <div id="device-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Dynamically populated -->
+    </div>
+
+    <!-- Activity Logs / System Feed -->
+    <div class="mt-8 grid grid-cols-12 gap-8">
+      <div class="col-span-12 lg:col-span-9 glass-panel p-6">
+        <h3 class="font-headline font-bold text-sm tracking-widest text-outline mb-6 flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">list_alt</span> SYSTEM_EVENT_LOGS
+        </h3>
+        <div class="space-y-4 font-mono text-[11px]">
+          <div class="flex gap-6 border-b border-outline-variant/10 pb-2">
+            <span class="text-outline-variant">[12:44:02]</span>
+            <span class="text-secondary font-bold">WRN</span>
+            <span class="text-on-surface">Voltage fluctuation detected in SECTOR_G7. Compensating...</span>
+            <span class="ml-auto text-outline-variant italic">ID: 4421</span>
+          </div>
+          <div class="flex gap-6 border-b border-outline-variant/10 pb-2">
+            <span class="text-outline-variant">[12:43:58]</span>
+            <span class="text-primary-fixed-dim font-bold">INF</span>
+            <span class="text-on-surface">User AUTH: Operator established session via BIOMETRIC.</span>
+            <span class="ml-auto text-outline-variant italic">ID: 4420</span>
+          </div>
+          <div class="flex gap-6 border-b border-outline-variant/10 pb-2">
+            <span class="text-outline-variant">[12:43:12]</span>
+            <span class="text-primary font-bold">SYS</span>
+            <span class="text-on-surface">Automatic optimization routine completed. 2.4% gain realized.</span>
+            <span class="ml-auto text-outline-variant italic">ID: 4419</span>
+          </div>
+          <div class="flex gap-6 border-b border-outline-variant/10 pb-2">
+            <span class="text-outline-variant">[12:42:01]</span>
+            <span class="text-error font-bold">ERR</span>
+            <span class="text-on-surface">Node connection lost. Attempting re-handshake.</span>
+            <span class="ml-auto text-outline-variant italic">ID: 4418</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-span-12 lg:col-span-3 flex flex-col gap-4">
+        <button onclick="load()" class="w-full bg-primary-container text-on-primary py-4 font-headline font-black text-xs tracking-widest uppercase flex items-center justify-center gap-3 shadow-[0_0_15px_rgba(0,229,255,0.3)] hover:brightness-110 active:scale-95 transition-all">
+          <span class="material-symbols-outlined">refresh</span>
+          REFRESH_DATA
+        </button>
+        <button class="w-full border border-outline-variant/40 text-on-surface py-4 font-headline font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-3 hover:bg-surface-container-highest transition-all">
+          <span class="material-symbols-outlined">download</span>
+          EXPORT_METRICS
+        </button>
+        <div class="glass-panel p-4 flex-1 mt-2">
+          <div class="font-label text-[10px] text-outline tracking-widest mb-4">NETWORK_SUMMARY</div>
+          <div class="space-y-3 text-[10px] font-label text-primary/60">
+            <div class="flex justify-between"><span>TOTAL_DEVICES:</span><span id="stat-total" class="text-primary">0</span></div>
+            <div class="flex justify-between"><span>ONLINE_ON:</span><span id="stat-on" class="text-primary-container">0</span></div>
+            <div class="flex justify-between"><span>ONLINE_OFF:</span><span id="stat-off" class="text-secondary">0</span></div>
+            <div class="flex justify-between"><span>OFFLINE:</span><span id="stat-offline" class="text-error">0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Edge highlights -->
+<div class="fixed top-0 left-0 w-full h-[1px] bg-primary/20 pointer-events-none"></div>
+<div class="fixed bottom-0 left-0 w-full h-[1px] bg-primary/10 pointer-events-none"></div>
+
+<script>
+  async function load() {
+    try {
+      const res = await fetch('/api/devices');
+      const data = await res.json();
+      const items = data.data || [];
+      const onCount = items.filter(x => x.status === 'on').length;
+      const offCount = items.filter(x => x.status === 'off').length;
+      const offlineCount = items.filter(x => x.status === 'offline').length;
+      const onlineCount = onCount + offCount;
+      const total = items.length;
+
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-on').textContent = onCount;
+      document.getElementById('stat-off').textContent = offCount;
+      document.getElementById('stat-offline').textContent = offlineCount;
+
+      // Update gauges
+      const onlinePct = total > 0 ? Math.round((onlineCount / total) * 100) : 0;
+      const activePct = total > 0 ? Math.round((onCount / total) * 100) : 0;
+      const circumference = 251.2;
+
+      document.getElementById('gauge-online').setAttribute('stroke-dashoffset', circumference - (circumference * onlinePct / 100));
+      document.getElementById('gauge-online-pct').textContent = onlinePct + '%';
+      document.getElementById('bar-online').style.width = onlinePct + '%';
+
+      document.getElementById('gauge-active').setAttribute('stroke-dashoffset', circumference - (circumference * activePct / 100));
+      document.getElementById('gauge-active-pct').textContent = activePct + '%';
+      document.getElementById('bar-active').style.width = activePct + '%';
+
+      // Render device cards
+      const icons = { on: 'lightbulb', off: 'lightbulb', offline: 'sensors_off' };
+      const borderColors = { on: 'border-l-primary', off: 'border-l-secondary', offline: 'border-l-primary/40' };
+      const dotColors = { on: 'bg-primary shadow-[0_0_8px_#00E5FF]', off: 'bg-secondary shadow-[0_0_8px_#d0bcff]', offline: 'bg-outline-variant' };
+      const iconColors = { on: 'text-primary', off: 'text-secondary', offline: 'text-primary/40' };
+
+      document.getElementById('device-grid').innerHTML = items.map(d => {
+        const name = (d.name || d.unique_id || d.ip || 'UNKNOWN').toUpperCase().replace(/\s+/g, '_');
+        return `<div class="glass-panel p-5 group hover:bg-primary/5 transition-colors cursor-pointer border-l-2 ${borderColors[d.status] || 'border-l-primary'}">
+          <div class="flex justify-between items-start mb-4">
+            <span class="material-symbols-outlined ${iconColors[d.status]}" ${d.status === 'on' ? 'style="font-variation-settings: \'FILL\' 1;"' : ''}>${icons[d.status] || 'lightbulb'}</span>
+            <div class="w-2 h-2 rounded-full ${dotColors[d.status]}"></div>
+          </div>
+          <div class="font-label text-[10px] text-outline tracking-tighter mb-1">${d.unique_id || 'NO_ID'}</div>
+          <div class="font-headline font-bold text-lg mb-4 text-on-surface ${d.status === 'offline' ? 'opacity-60' : ''}">${name}</div>
+          <div class="space-y-2">
+            <div class="flex justify-between text-[11px] font-mono">
+              <span class="text-outline">STATE:</span>
+              <span class="${d.status === 'on' ? 'text-primary-container' : d.status === 'off' ? 'text-secondary' : 'text-outline'}">${d.status.toUpperCase()}</span>
+            </div>
+            <div class="flex justify-between text-[11px] font-mono">
+              <span class="text-outline">IP:</span>
+              <span class="text-on-surface">${d.ip || 'N/A'}</span>
+            </div>
+          </div>
+        </div>`;
+      }).join('') || '<div class="col-span-4 text-center text-outline font-label text-sm tracking-widest py-8">NO_DEVICES_FOUND</div>';
+    } catch (e) {
+      document.getElementById('device-grid').innerHTML = `<div class="col-span-4 text-center text-error font-label text-sm tracking-widest py-8">LOAD_FAILED: ${e.message}</div>`;
+    }
+  }
+  load();
+</script>
+</body>
+</html>
